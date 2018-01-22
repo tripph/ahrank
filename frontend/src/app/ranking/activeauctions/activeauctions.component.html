@@ -1,0 +1,7 @@
+<div *ngIf="scores">
+  <mat-list>
+    <ng-container *ngFor="let score of scores">
+      <mat-list-item> {{ score.owner + ': ' + score.count }}</mat-list-item>
+    </ng-container>
+  </mat-list>
+</div>

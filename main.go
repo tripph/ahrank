@@ -4,6 +4,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/thilltbc/ahrank/backend/auctions"
 	"os"
+	"github.com/labstack/echo/middleware"
 )
 
 func main() {
@@ -13,7 +14,10 @@ func main() {
 	if port == "" {
 		port = "1232"
 	}
-
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
+	}))
 	e.Static("/", "backend/static_assets")
 	e.File("/", "backend/static_assets/index.html")
 
