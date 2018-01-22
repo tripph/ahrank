@@ -3,13 +3,18 @@ package main
 import (
 	"github.com/labstack/echo"
 	"github.com/thilltbc/ahrank/backend/auctions"
+	"github.com/thilltbc/ahrank/backend/realms"
+
 	"os"
 	"github.com/labstack/echo/middleware"
+	"fmt"
 )
 
 func main() {
 	e := echo.New()
-	auctions.INIT()
+	//auctions.INIT()
+	realmList := realms.GetRealmNames()
+	fmt.Printf("Realms: %v\n", realmList)
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "1232"

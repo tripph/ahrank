@@ -27,3 +27,18 @@ type AuctionResponseFiles struct {
 	Url string
 	LastModified uint64
 }
+type RealmsListResponse struct {
+	Realms []FullRealmInfo
+}
+type FullRealmInfo struct {
+	Type string
+	Population string
+	Queue bool
+	Status bool
+	Name string
+	Slug string
+	Battlegroup string
+	Locale string
+	Timezone string
+	Connected_realms []string
+}
