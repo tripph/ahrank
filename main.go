@@ -3,18 +3,16 @@ package main
 import (
 	"github.com/labstack/echo"
 	"github.com/thilltbc/ahrank/backend/auctions"
-	"github.com/thilltbc/ahrank/backend/realms"
 
 	"os"
 	"github.com/labstack/echo/middleware"
-	"fmt"
+
+	"github.com/thilltbc/ahrank/backend/realms"
 )
 
 func main() {
 	e := echo.New()
-	//auctions.INIT()
-	realmList := realms.GetRealmNames()
-	fmt.Printf("Realms: %v\n", realmList)
+	// go auctions.INIT()
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "1232"
@@ -26,8 +24,11 @@ func main() {
 	e.Static("/", "backend/static_assets")
 	e.File("/", "backend/static_assets/index.html")
 
-	e.GET("/auction-count-scores", func(c echo.Context) error {
+	e.GET("/api/auction-count-scores", func(c echo.Context) error {
 		return c.JSON(200, auctions.GetAuctionCountRanking())
+	})
+	e.GET("/api/realms/list", func(c echo.Context) error {
+		return c.JSON(200, realms.GetRealmList())
 	})
 	e.Logger.Fatal(e.Start(":"+port))
 }

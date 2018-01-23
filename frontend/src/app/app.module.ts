@@ -12,6 +12,8 @@ import { RankingComponent } from './ranking/ranking.component';
 import { ActiveauctionsComponent } from './ranking/activeauctions/activeauctions.component';
 import { RankingService } from './ranking.service';
 import {HttpClient, HttpClientModule} from "@angular/common/http";
+import { RealmsComponent } from './realms/realms.component';
+import {RealmService} from "./realms/realm.service";
 
 
 @NgModule({
@@ -21,7 +23,8 @@ import {HttpClient, HttpClientModule} from "@angular/common/http";
     TopnavComponent,
     AboutComponent,
     RankingComponent,
-    ActiveauctionsComponent
+    ActiveauctionsComponent,
+    RealmsComponent
   ],
   imports: [
     BrowserModule,
@@ -29,7 +32,7 @@ import {HttpClient, HttpClientModule} from "@angular/common/http";
     AppRoutingModule,
     MaterialModule
   ],
-  providers: [RankingService, HttpClient],
+  providers: [RankingService, HttpClient, RealmService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

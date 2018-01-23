@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import {HomeComponent} from "./home/home.component";
 import {AboutComponent} from "./about/about.component";
 import {ActiveauctionsComponent} from "./ranking/activeauctions/activeauctions.component";
+import {RealmsComponent} from "./realms/realms.component";
 
 const routes: Routes = [
   {
@@ -12,6 +13,10 @@ const routes: Routes = [
   {
     path: 'about',
     component: AboutComponent
+  },
+  {
+    path: 'realms',
+    component: RealmsComponent
   },
   {
     path: 'ranking/active-auctions',
