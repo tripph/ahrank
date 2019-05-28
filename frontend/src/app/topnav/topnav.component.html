@@ -1,0 +1,23 @@
+<mat-toolbar color="primary">
+  <button mat-raised-button routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" routerLink="">
+     Home
+  </button>
+
+  <mat-menu #rankingMenu="matMenu">
+    <button mat-menu-item routerLink="ranking/active-auctions">
+       Active Auction Count
+    </button>
+    <button mat-menu-item>
+       Other
+    </button>
+  </mat-menu>
+  <button mat-raised-button [matMenuTriggerFor]="rankingMenu">
+    Rankings
+  </button>
+  <button mat-raised-button routerLink="realms" routerLinkActive="active">
+    Realms
+  </button>
+
+  <button mat-raised-button routerLinkActive="active" routerLink="about"> About </button>
+
+</mat-toolbar>

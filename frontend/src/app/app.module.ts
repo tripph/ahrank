@@ -6,23 +6,33 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {MaterialModule} from "./material/material.module";
 import { HomeComponent } from './home/home.component';
-import { SidenavComponent } from './sidenav/sidenav.component';
-import { RankingMenuComponent } from './sidenav/ranking-menu/ranking-menu.component';
+import { TopnavComponent } from './topnav/topnav.component';
+import { AboutComponent } from './about/about.component';
+import { RankingComponent } from './ranking/ranking.component';
+import { ActiveauctionsComponent } from './ranking/activeauctions/activeauctions.component';
+import { RankingService } from './ranking.service';
+import {HttpClient, HttpClientModule} from "@angular/common/http";
+import { RealmsComponent } from './realms/realms.component';
+import {RealmService} from "./realms/realm.service";
 
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    SidenavComponent,
-    RankingMenuComponent
+    TopnavComponent,
+    AboutComponent,
+    RankingComponent,
+    ActiveauctionsComponent,
+    RealmsComponent
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     MaterialModule
   ],
-  providers: [],
+  providers: [RankingService, HttpClient, RealmService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

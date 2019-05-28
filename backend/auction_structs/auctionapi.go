@@ -1,5 +1,7 @@
 package auction_structs
 
+import "github.com/thilltbc/ahrank/backend/realms"
+
 type Auction struct {
 	Auc uint64
 	Item uint64
@@ -17,7 +19,7 @@ type Realm struct {
 	Slug string
 }
 type AuctionsJSON struct {
-	Realms []Realm
+	Realms []realms.FullRealmInfo
 	Auctions []Auction
 }
 type BaseAuctionResponse struct {

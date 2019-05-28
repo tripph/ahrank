@@ -8,6 +8,8 @@ import (
 	"io/ioutil"
 	"sort"
 	"github.com/thilltbc/ahrank/backend/auction_structs"
+	"github.com/thilltbc/ahrank/backend/realms"
+	"strings"
 )
 type PlayerScore struct {
 	Owner string `json:"owner"`
@@ -16,7 +18,9 @@ type PlayerScore struct {
 //var conn *pgx.Conn
 var GlobalAuctions []auction_structs.Auction
 func INIT() {
-	//auctionRecordsURL := getAHRecordsFileURL("azuremyst")
+	slugs := realms.GetRealmNames(realms.GetRealmList())
+	auctionRecordsURLs := GetAHRecordsFileURL(slugs)
+	GlobalAuctions = GetLiveAuctions(auctionRecordsURLs)
 	//importAuctionRecords(auctionRecordsURL)
 /*	var config pgx.ConnConfig
 	config.Database = "ahrank"
@@ -28,7 +32,7 @@ func INIT() {
 		log.Fatalf("Error connecting to db: %v\n", err)
 	}
 */
-	GlobalAuctions = getDownloadedAuctions().Auctions
+	//GlobalAuctions = GetDownloadedAuctions().Auctions
 
 }
 func GetAuctionCountRanking() []PlayerScore {
@@ -85,7 +89,7 @@ func insertAuctions(auctions auction_structs.AuctionsJSON) {
 	}
 
 }*/
-func getDownloadedAuctions() auction_structs.AuctionsJSON{
+func GetDownloadedAuctions() auction_structs.AuctionsJSON{
 	// for testing to avoid exhausting api/bandwidth
 	auctionsJSON, err := ioutil.ReadFile("./auctions.json")
 	if err != nil {
@@ -99,31 +103,48 @@ func getDownloadedAuctions() auction_structs.AuctionsJSON{
 	fmt.Printf("Found %v auctions!\n", len(respStruct.Auctions))
 	return respStruct
 }
-func getLiveAuctions(auctionRecordsURL string) auction_structs.AuctionsJSON {
+func GetLiveAuctions(auctionRecordsURLs []string) []auction_structs.Auction {
+	fmt.Printf("URLs: %v\n", auctionRecordsURLs)
 	// gets auctionfile and returns them
-	resp, err := resty.R().Get(auctionRecordsURL)
-	if err != nil {
-		log.Fatalf("Error getting Auction JSON Data File: %v\n", err)
+	var results = make([]auction_structs.Auction, 0)
+	for i,_ := range auctionRecordsURLs {
+		fmt.Printf("Trying to get file: %v\n", auctionRecordsURLs[i])
+		resp, err := resty.R().Get(auctionRecordsURLs[i])
+		if err != nil {
+			log.Fatalf("Error getting Auction JSON Data File: %v\n", err)
+		}
+		var respStruct auction_structs.AuctionsJSON
+		err  = json.Unmarshal(resp.Body(), &respStruct)
+		if err != nil {
+			log.Fatalf("Error unmarshalling Auction JSON File: %v\n", err)
+		}
+		results = append(results, respStruct.Auctions...)
 	}
-	var respStruct auction_structs.AuctionsJSON
-	err  = json.Unmarshal(resp.Body(), &respStruct)
-	if err != nil {
-		log.Fatalf("Error unmarshalling Auction JSON File: %v\n", err)
-	}
-	fmt.Printf("Found %v auctions!\n", len(respStruct.Auctions))
-	return respStruct
+	fmt.Printf("Found %v auctions!\n", len(results))
+	return results
 }
 
-func getAHRecordsFileURL(realmSlug string) string {
-	resp, err := resty.R().Get("https://us.api.battle.net/wow/auction/data/" + realmSlug + "?locale=en_US&apikey=bee9696787614c25a19dd2a0f0ead085")
-	if err != nil {
-		log.Fatalf("Error getting Auction JSON Files: %v\n", err)
+func GetAHRecordsFileURL(realmSlug []string) []string {
+	var urlList = make([]string, len(realmSlug))
+	for i,url := range realmSlug {
+		if strings.TrimSpace(url) == "" {
+			break
+		}
+		finalUrl := "https://us.api.battle.net/wow/auction/data/" + url+ "?locale=en_US&apikey=bee9696787614c25a19dd2a0f0ead085"
+		fmt.Printf("Getting: %v\n", finalUrl)
+
+		resp, err := resty.R().Get(finalUrl)
+		if err != nil {
+			log.Fatalf("Error getting Auction JSON Files: %v\n", err)
+		}
+		var respStruct auction_structs.BaseAuctionResponse
+		err  = json.Unmarshal(resp.Body(), &respStruct)
+		if err != nil {
+			log.Fatalf("Error unmarshalling Initial Auction JSON response: %v\n", err)
+		}
+		fmt.Printf("Got: %v\n", respStruct.Files)
+		//fmt.Printf("%v", respStruct)
+		urlList[i] = respStruct.Files[0].Url
 	}
-	var respStruct auction_structs.BaseAuctionResponse
-	err  = json.Unmarshal(resp.Body(), &respStruct)
-	if err != nil {
-		log.Fatalf("Error unmarshalling Initial Auction JSON response: %v\n", err)
-	}
-	fmt.Printf("%v", respStruct)
-	return respStruct.Files[0].Url
+	return urlList
 }
