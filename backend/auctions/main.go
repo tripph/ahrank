@@ -115,7 +115,7 @@ func getLiveAuctions(auctionRecordsURL string) auction_structs.AuctionsJSON {
 }
 
 func getAHRecordsFileURL(realmSlug string) string {
-	resp, err := resty.R().Get("https://us.api.battle.net/wow/auction/data/" + realmSlug + "?locale=en_US&apikey=rcnpk45pfgjxge4p96udb9cstck2wrra")
+	resp, err := resty.R().Get("https://us.api.battle.net/wow/auction/data/" + realmSlug + "?locale=en_US&apikey=bee9696787614c25a19dd2a0f0ead085")
 	if err != nil {
 		log.Fatalf("Error getting Auction JSON Files: %v\n", err)
 	}
